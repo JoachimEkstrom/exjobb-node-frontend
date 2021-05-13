@@ -16,6 +16,9 @@ const routes = [
         path: "/opc",
         name: "OPC",
         component: () => import("../views/OPC.vue"),
+        props: {
+            host: "http://localhost:3005",
+        },
     },
 ]
 
