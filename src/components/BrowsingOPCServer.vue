@@ -1,21 +1,23 @@
 <template>
     <div>
-        <Button text="Browse Root folder on OPC Server" eventId="browseOPC" @click="browseOPCServer(OPCNodeId)"></Button>
+        <Button text="Browse Root folder on OPC Server" eventId="browseOPC" @click="browseOPCServer(hostname, OPCNodeId)"></Button>
         <div >
             <div v-for="(data, index) in browsedData" :key="index">
                 <div v-if="data.nodeClass === 2">
                     <p> Variable: {{data.name}} </p>
-                    <Button text="Read Variable" eventId="readVar" @click="readVar(data)"></Button>
+                    <Button text="Read Variable" eventId="readVar" @click="readVar(hostname, data)"></Button>
                     <p> {{data.result}} </p>
                 </div>
                 <div v-else-if="data.nodeClass === 4" >
-                    <p @click="callMethod(data.id)">Method: {{data.name}} </p>
-                    <input v-model="data.arguments[0]" type="number">
-                    <input v-model="data.arguments[1]" type="number">
-                    <Button text="Call Method" eventId="callMethod" @click="callMethod(data, data.arguments)"></Button>
+                    <p @click="callMethod(hostname, data.id)">Method: {{data.name}} </p>
+                    <Button text="Get arguments" eventId="getArguments" @click="getArguments(hostname, data)"></Button>
+                    <div v-for="(args, index) in methodArguments[0]" :key="index">
+                        <p>{{args.name}} : <input v-model="methodArgs[index]" type="number"></p>                        
+                    </div>
+                    <Button text="Call Method" eventId="callMethod" @click="callMethod(hostname, data, methodArgs)"></Button>
                     <p> {{data.result}} </p>
                 </div>
-                <p v-else @click="browseOPCServer(data.id)"> {{data.name}} </p>
+                <p v-else @click="browseOPCServer(hostname, data.id)"> {{data.name}} </p>
             </div>    
         </div>
     </div>
@@ -30,7 +32,7 @@ export default {
         Button,
     },
     computed: {
-        ...mapState(['browsedData']),
+        ...mapState(['browsedData', 'methodArguments']),
     },
     props: {
         hostname: {
@@ -43,15 +45,15 @@ export default {
             OPCNodeId : "RootFolder",
             clickedOPCNodeId : "",
             methodResponse: "",
+            methodArgs : [],
         }
 
     },
      methods: {
 
-        ...mapActions(['updBrowsedData']),
+        ...mapActions(['updBrowsedData', 'updMethodArguments']),
 
         callMethod(hostname, nodeData, arg){
-
             fetch(`${hostname}/callMethod`, {
                 method: 'POST',
                 headers: {"Access-Control-Allow-Origin" : '*', 'Content-Type': 'application/json'},
@@ -65,6 +67,11 @@ export default {
              
             
         },
+        getArguments(hostname, nodeData){
+
+            this.updMethodArguments({hostname: hostname, nodeData: nodeData})  
+             
+       },
         readDataForInfluxDb(hostname){
             fetch(`${hostname}/addToInfluxDb`, {
                 method: 'GET',
@@ -88,8 +95,9 @@ export default {
                 });
             
         },
-        browseOPCServer(uri){
-            this.updBrowsedData({uri: uri})   
+        browseOPCServer(hostname, uri){
+            console.log(hostname)
+            this.updBrowsedData({hostname: hostname, uri: uri})   
         }
      }
 }

@@ -5,6 +5,7 @@ const store = createStore({
         return {
             browsedData: [],
             InfluxDBResponse: {},
+            methodArguments: [],
         }
     },
     mutations: {
@@ -14,10 +15,13 @@ const store = createStore({
         updateInfluxDBResponse(state, data) {
             state.InfluxDBResponse = data
         },
+        updateMethodArguments(state, data) {
+            state.methodArguments = data
+        },
     },
     actions: {
-        async updBrowsedData(context, { uri: uri }) {
-            fetch("http://localhost:3005/browseOPCServer", {
+        async updBrowsedData(context, { hostname: hostname, uri: uri }) {
+            fetch(`${hostname}/browseOPCServer`, {
                 method: "POST",
                 headers: { "Access-Control-Allow-Origin": "*", "Content-Type": "application/json" },
                 body: JSON.stringify({ uri: uri }), //"ns=7;s=MAIN"
@@ -30,6 +34,18 @@ const store = createStore({
         },
         async updInfluxDBResponse(context, { res: res }) {
             context.commit("updateInfluxDBResponse", res)
+        },
+        async updMethodArguments(context, { hostname: hostname, nodeData: nodeData }) {
+            fetch(`${hostname}/getMethodArguments`, {
+                method: "POST",
+                headers: { "Access-Control-Allow-Origin": "*", "Content-Type": "application/json" },
+                body: JSON.stringify({ uri: nodeData.id }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data)
+                    context.commit("updateMethodArguments", data)
+                })
         },
     },
     modules: {},
