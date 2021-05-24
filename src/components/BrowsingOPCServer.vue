@@ -1,14 +1,23 @@
 <template>
     <div>
+        <div id="navigation">
         <Button text="Browse Root folder on OPC Server" eventId="browseOPC" @click="browseOPCServer(hostname, OPCNodeId)"></Button>
-        <div >
-            <div v-for="(data, index) in browsedData" :key="index">
+        <Button v-if="lastOPCNodeId !== 'RootFolder'" text="Go up one level" eventId="goBack" @click="goBack(hostname, lastOPCNodeId)"></Button>
+        </div>
+
+        <div id="browser">
+            <div v-for="(data, index) in browsedData" :key="index" id="oneElement">
                 <div v-if="data.nodeClass === 2">
                     <p> Variable: {{data.name}} </p>
                     <Button text="Read Variable" eventId="readVar" @click="readVar(hostname, data)"></Button>
-                    <Button v-if="data.readOnly === false" text="Write to Variable" eventId="writeVar" @click="writeVar(hostname, data)"></Button>
-                    <p v-else>This variable has the access specifier "read only"</p>
                     <p> {{data.result}} </p>
+                    <div v-if="data.readOnly === false">
+                        <p>Enter value to write : <input v-model="newValue" type="number"></p> 
+
+                        <Button  text="Write to Variable" eventId="writeVar" @click="writeVar(hostname, data, newValue)"></Button>
+                    </div>
+                    <p v-else>This variable has the access specifier "read only"</p>
+                    
                 </div>
                 <div v-else-if="data.nodeClass === 4" >
                     <p @click="callMethod(hostname, data.id)">Method: {{data.name}} </p>
@@ -45,9 +54,11 @@ export default {
     data() {
         return {
             OPCNodeId : "RootFolder",
+            lastOPCNodeId : [],
             clickedOPCNodeId : "",
             methodResponse: "",
             methodArgs : [],
+            newValue: "",
         }
 
     },
@@ -101,7 +112,7 @@ export default {
             fetch(`${hostname}/writeVariable`, {
                 method: 'POST',
                 headers: {"Access-Control-Allow-Origin" : '*', 'Content-Type': 'application/json'},
-                body: JSON.stringify({nodeId:nodeData.id, newValue: "Berra"}),
+                body: JSON.stringify({nodeId:nodeData.id, newValue: newValue}),
             })
             .then(response => response.json())
             .then(data => {
@@ -111,13 +122,32 @@ export default {
             
         },
         browseOPCServer(hostname, uri){
-            console.log(hostname)
+            console.log(uri)
+            this.lastOPCNodeId.push(uri)
+            console.log(this.lastOPCNodeId)
             this.updBrowsedData({hostname: hostname, uri: uri})   
+        },
+        goBack(hostname){
+            this.lastOPCNodeId.pop()
+            let uri = this.lastOPCNodeId[this.lastOPCNodeId.length -1]
+            console.log(uri)
+            console.log(this.lastOPCNodeId)
+            this.updBrowsedData({hostname: hostname, uri: uri})  
         }
      }
 }
 </script>
 
 <style scoped>
+
+#navigation {
+    background-color: aqua;
+}
+#browser {
+    background-color:blueviolet;
+}
+#oneElement {
+    background-color:chartreuse;
+}
 
 </style>
