@@ -6,6 +6,8 @@
                 <div v-if="data.nodeClass === 2">
                     <p> Variable: {{data.name}} </p>
                     <Button text="Read Variable" eventId="readVar" @click="readVar(hostname, data)"></Button>
+                    <Button v-if="data.readOnly === false" text="Write to Variable" eventId="writeVar" @click="writeVar(hostname, data)"></Button>
+                    <p v-else>This variable has the access specifier "read only"</p>
                     <p> {{data.result}} </p>
                 </div>
                 <div v-else-if="data.nodeClass === 4" >
@@ -87,6 +89,19 @@ export default {
                 method: 'POST',
                 headers: {"Access-Control-Allow-Origin" : '*', 'Content-Type': 'application/json'},
                 body: JSON.stringify({nodeId:nodeData.id}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                nodeData.result = data;
+                });
+            
+        },
+        writeVar(hostname, nodeData, newValue){
+            fetch(`${hostname}/writeVariable`, {
+                method: 'POST',
+                headers: {"Access-Control-Allow-Origin" : '*', 'Content-Type': 'application/json'},
+                body: JSON.stringify({nodeId:nodeData.id, newValue: "Berra"}),
             })
             .then(response => response.json())
             .then(data => {
