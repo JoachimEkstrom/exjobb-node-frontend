@@ -4,8 +4,9 @@ const store = createStore({
     state() {
         return {
             browsedData: [],
-            InfluxDBResponse: {},
+            InfluxDBResponse: 1,
             methodArguments: [],
+            isContinuousQuering: false,
         }
     },
     mutations: {
@@ -18,6 +19,9 @@ const store = createStore({
         updateMethodArguments(state, data) {
             state.methodArguments = data
         },
+        updateQuering(state, data) {
+            state.isContinuousQuering = data
+        },
     },
     actions: {
         async updBrowsedData(context, { hostname: hostname, uri: uri }) {
@@ -28,7 +32,6 @@ const store = createStore({
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log(data)
                     context.commit("updateBrowsedData", data)
                 })
         },
@@ -45,6 +48,17 @@ const store = createStore({
                 .then((data) => {
                     console.log(data)
                     context.commit("updateMethodArguments", data)
+                })
+        },
+        async startSingleQuery(context, { hostname: hostname }) {
+            fetch(`${hostname}/addToInfluxDb`, {
+                method: "GET",
+                headers: { "Access-Control-Allow-Origin": "*", "Content-Type": "application/json" },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data)
+                    context.commit("updateInfluxDBResponse", data)
                 })
         },
     },

@@ -2,7 +2,7 @@
     <div>
         <div id="navigation">
         <Button text="Browse Root folder on OPC Server" eventId="browseOPC" @click="browseOPCServer(hostname, OPCNodeId)"></Button>
-        <Button v-if="lastOPCNodeId !== 'RootFolder'" text="Go up one level" eventId="goBack" @click="goBack(hostname, lastOPCNodeId)"></Button>
+        <Button v-if="topLevel === false" text="Go up one level" eventId="goBack" @click="goBack(hostname, lastOPCNodeId)"></Button>
         </div>
 
         <div id="browser">
@@ -44,6 +44,7 @@ export default {
     },
     computed: {
         ...mapState(['browsedData', 'methodArguments']),
+        
     },
     props: {
         hostname: {
@@ -55,6 +56,7 @@ export default {
         return {
             OPCNodeId : "RootFolder",
             lastOPCNodeId : [],
+            topLevel : true,
             clickedOPCNodeId : "",
             methodResponse: "",
             methodArgs : [],
@@ -122,16 +124,16 @@ export default {
             
         },
         browseOPCServer(hostname, uri){
-            console.log(uri)
             this.lastOPCNodeId.push(uri)
-            console.log(this.lastOPCNodeId)
+            this.topLevel = false
             this.updBrowsedData({hostname: hostname, uri: uri})   
         },
         goBack(hostname){
             this.lastOPCNodeId.pop()
             let uri = this.lastOPCNodeId[this.lastOPCNodeId.length -1]
-            console.log(uri)
-            console.log(this.lastOPCNodeId)
+            if (this.lastOPCNodeId.length === 0) {
+                this.topLevel = true
+            }
             this.updBrowsedData({hostname: hostname, uri: uri})  
         }
      }

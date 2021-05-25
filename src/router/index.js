@@ -20,6 +20,14 @@ const routes = [
             host: "http://localhost:3005",
         },
     },
+    {
+        path: "/influxdb",
+        name: "InfluxDb",
+        component: () => import("../views/InfluxDb.vue"),
+        props: {
+            host: "http://localhost:3005",
+        },
+    },
 ]
 
 const router = createRouter({
