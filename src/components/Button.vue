@@ -25,3 +25,10 @@ export default {
     
 }
 </script>
+
+<style scoped>
+button {
+    cursor: pointer;
+    /* border-radius: 0px; */
+}
+</style>

@@ -1,34 +1,36 @@
 <template>
-    <div>
-        <div id="navigation">
-        <Button text="Browse Root folder on OPC Server" eventId="browseOPC" @click="browseOPCServer(hostname, OPCNodeId)"></Button>
-        <Button v-if="topLevel === false" text="Go up one level" eventId="goBack" @click="goBack(hostname, lastOPCNodeId)"></Button>
+    <div class="contaniner">
+        <div class="navigation">
+            <Button text="Browse Root folder on OPC Server" eventId="browseOPC" @click="browseOPCServer(hostname, OPCNodeId)"></Button>
+            <Button v-if="topLevel === false" text="Go up one level" eventId="goBack" @click="goBack(hostname, lastOPCNodeId)"></Button>
         </div>
 
         <div id="browser">
-            <div v-for="(data, index) in browsedData" :key="index" id="oneElement">
+            <div v-for="(data, index) in browsedData" :key="index" class="oneElement">
                 <div v-if="data.nodeClass === 2">
-                    <p> Variable: {{data.name}} </p>
-                    <Button text="Read Variable" eventId="readVar" @click="readVar(hostname, data)"></Button>
-                    <p> {{data.result}} </p>
+                    <p class="varName"> Variable name: {{data.name}} </p>
+                    <div class="readVar">
+                        <Button class="buttonReadVar" text="Read this variable" eventId="readVar" @click="readVar(hostname, data)"></Button>
+                        <p class="readResults"> {{data.result}} </p>
+                    </div>
+
                     <div v-if="data.readOnly === false">
                         <p>Enter value to write : <input v-model="newValue" type="number"></p> 
-
-                        <Button  text="Write to Variable" eventId="writeVar" @click="writeVar(hostname, data, newValue)"></Button>
+                        <Button  class="buttonWriteVar" text="Write to Variable" eventId="writeVar" @click="writeVar(hostname, data, newValue)"></Button>
                     </div>
                     <p v-else>This variable has the access specifier "read only"</p>
                     
                 </div>
-                <div v-else-if="data.nodeClass === 4" >
-                    <p @click="callMethod(hostname, data.id)">Method: {{data.name}} </p>
-                    <Button text="Get arguments" eventId="getArguments" @click="getArguments(hostname, data)"></Button>
+                <div class="method" v-else-if="data.nodeClass === 4" >
+                    <p class="methodName" @click="callMethod(hostname, data.id)">Method name: {{data.name}} </p>
+                    <Button class="methodButton" text="Get method arguments" eventId="getArguments" @click="getArguments(hostname, data)"></Button>
                     <div v-for="(args, index) in methodArguments[0]" :key="index">
                         <p>{{args.name}} : <input v-model="methodArgs[index]" type="number"></p>                        
                     </div>
-                    <Button text="Call Method" eventId="callMethod" @click="callMethod(hostname, data, methodArgs)"></Button>
+                    <Button class="methodButton" text="Call Method" eventId="callMethod" @click="callMethod(hostname, data, methodArgs)"></Button>
                     <p> {{data.result}} </p>
                 </div>
-                <p v-else @click="browseOPCServer(hostname, data.id)"> {{data.name}} </p>
+                <p class="viewNextLevel" v-else @click="browseOPCServer(hostname, data.id)">  View: {{data.name}} </p>
             </div>    
         </div>
     </div>
@@ -142,14 +144,61 @@ export default {
 
 <style scoped>
 
-#navigation {
-    background-color: aqua;
+.container {
+    display:flex;
+    width: 500px;
+
+}
+p {
+    padding: 13px 10px;
+}
+.navigation {
+    margin: 0px;
+    background-color: rgb(202, 202, 202);
 }
 #browser {
-    background-color:blueviolet;
+    margin: auto;
+    width: 50%;
+    padding: 20px auto;
+    margin: 20px auto;
+
 }
-#oneElement {
-    background-color:chartreuse;
+.oneElement {
+    background-color:deepskyblue;
+    margin:  20px;
+    border-radius: 25px;
+
+}
+.oneElement p {
+    margin: 10 auto;
+    align-content: center;
+    justify-content: center;
+}
+.readVar{
+    width: 3vw;
+    display: inline-flex;
+}
+.readResults{
+    width: 5vw;
+    align-content:flex-end;
+}
+.buttonReadVar{
+    padding: 13px 10px;
+}
+.buttonWriteVar{
+    padding: 13px 10px;
+}
+.varName{
+    padding-top: 10px;
+}
+.viewNextLevel{
+    cursor: pointer;
+}
+.methodName{
+    padding: 13px 10px;
+}
+.methodButton{
+    padding: 13px 10px;
 }
 
 </style>

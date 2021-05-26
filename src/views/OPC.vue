@@ -1,6 +1,6 @@
 <template>
     <div>
-        <AddToInfluxDB v-bind:hostname= host />
+        
         <BrowsingOPCServer v-bind:hostname= host />
     </div>
 </template>
