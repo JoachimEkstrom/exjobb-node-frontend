@@ -7,6 +7,8 @@ const store = createStore({
             InfluxDBResponse: 1,
             methodArguments: [],
             isContinuousQuering: false,
+            lastOPCNodeId: [],
+            topLevel: true,
         }
     },
     mutations: {
@@ -21,6 +23,18 @@ const store = createStore({
         },
         updateQuering(state, data) {
             state.isContinuousQuering = data
+        },
+        pushLastOPCNodeId(state, data) {
+            state.lastOPCNodeId.push(data)
+        },
+        popLastOPCNodeId(state, data) {
+            state.lastOPCNodeId.pop()
+        },
+        setTopLevel(state, data) {
+            state.topLevel = true
+        },
+        resetTopLevel(state, data) {
+            state.topLevel = false
         },
     },
     actions: {

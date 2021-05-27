@@ -38,14 +38,14 @@
 
 <script>
 import Button from '../components/Button.vue'
-import { mapState, mapActions } from "vuex"
+import { mapState, mapActions, mapMutations } from "vuex"
 export default {
     name: 'BrowsingOPCServer',
     components: {
         Button,
     },
     computed: {
-        ...mapState(['browsedData', 'methodArguments']),
+        ...mapState(['browsedData', 'methodArguments','lastOPCNodeId', 'topLevel']),
         
     },
     props: {
@@ -57,8 +57,6 @@ export default {
     data() {
         return {
             OPCNodeId : "RootFolder",
-            lastOPCNodeId : [],
-            topLevel : true,
             clickedOPCNodeId : "",
             methodResponse: "",
             methodArgs : [],
@@ -69,6 +67,7 @@ export default {
      methods: {
 
         ...mapActions(['updBrowsedData', 'updMethodArguments']),
+        ...mapMutations({pushNodeId: 'pushLastOPCNodeId', popNodeId:'popLastOPCNodeId', setTopLevel : 'setTopLevel', resetTopLevel : 'resetTopLevel'}),
 
         callMethod(hostname, nodeData, arg){
             fetch(`${hostname}/callMethod`, {
@@ -126,15 +125,15 @@ export default {
             
         },
         browseOPCServer(hostname, uri){
-            this.lastOPCNodeId.push(uri)
-            this.topLevel = false
+            this.pushNodeId(uri)
+            this.resetTopLevel()
             this.updBrowsedData({hostname: hostname, uri: uri})   
         },
         goBack(hostname){
-            this.lastOPCNodeId.pop()
+            this.popNodeId()
             let uri = this.lastOPCNodeId[this.lastOPCNodeId.length -1]
             if (this.lastOPCNodeId.length === 0) {
-                this.topLevel = true
+                this.setTopLevel()
             }
             this.updBrowsedData({hostname: hostname, uri: uri})  
         }
