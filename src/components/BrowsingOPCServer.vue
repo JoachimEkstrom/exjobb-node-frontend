@@ -14,11 +14,11 @@
                         <p class="readResults"> {{data.result}} </p>
                     </div>
 
-                    <div v-if="data.readOnly === false">
-                        <p>Enter value to write : <input v-model="newValue" type="number"></p> 
-                        <Button  class="buttonWriteVar" text="Write to Variable" eventId="writeVar" @click="writeVar(hostname, data, newValue)"></Button>
+                    <div class="writeDiv" v-if="data.readOnly === false">
+                        <p class="writeP">Enter value to write : <input v-model="data.newValue" type="number"></p> 
+                        <Button class="buttonWriteVar" text="Write to this variable" eventId="writeVar" @click="writeVar(hostname, data, data.newValue)"></Button>
                     </div>
-                    <p v-else>This variable has the access specifier "read only"</p>
+                    <p class="noWrite" v-else>This variable has the access specifier "read only"</p>
                     
                 </div>
                 <div class="method" v-else-if="data.nodeClass === 4" >
@@ -112,6 +112,7 @@ export default {
             
         },
         writeVar(hostname, nodeData, newValue){
+            console.log(newValue)
             fetch(`${hostname}/writeVariable`, {
                 method: 'POST',
                 headers: {"Access-Control-Allow-Origin" : '*', 'Content-Type': 'application/json'},
@@ -120,7 +121,10 @@ export default {
             .then(response => response.json())
             .then(data => {
                 console.log(data)
-                nodeData.result = data;
+                if(data){
+                    nodeData.result = data;
+                }
+                
                 });
             
         },
@@ -163,7 +167,7 @@ p {
 
 }
 .oneElement {
-    background-color:deepskyblue;
+    background-color:rgb(90, 166, 253);
     margin:  20px;
     border-radius: 25px;
 
@@ -174,21 +178,37 @@ p {
     justify-content: center;
 }
 .readVar{
-    width: 3vw;
+    width: 75%;
     display: inline-flex;
 }
 .readResults{
-    width: 5vw;
+    width: 50%;
     align-content:flex-end;
+    margin: auto;
+}
+.noWrite {
+    margin: 5px auto;
+    padding: 5px;
 }
 .buttonReadVar{
-    padding: 13px 10px;
+    margin: auto;
+    justify-content: center;
+    padding: 5px 10px;
+}
+.writeDiv{
+
+}
+.writeP {
+    margin: 5px auto;
+    padding: 0px;
 }
 .buttonWriteVar{
-    padding: 13px 10px;
+    padding: 5px 10px;
 }
 .varName{
+    margin: 0px;
     padding-top: 10px;
+    padding-bottom: 0px;
 }
 .viewNextLevel{
     cursor: pointer;

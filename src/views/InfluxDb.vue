@@ -42,7 +42,7 @@ export default {
 
 #iframe {
     width: 800px;
-    height: 800px;
+    height: 400px;
 }
 
 </style>

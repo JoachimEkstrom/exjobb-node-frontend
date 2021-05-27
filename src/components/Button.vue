@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button @click="clicked">{{text}}</button>
+        <button class="button" @click="clicked">{{text}}</button>
     </div>
 </template>
 
@@ -27,8 +27,22 @@ export default {
 </script>
 
 <style scoped>
-button {
+.button {
     cursor: pointer;
-    /* border-radius: 0px; */
+    /* background-color: #4CAF50; Green */
+    border: none;
+    color: rgb(0, 0, 0);
+    padding: 10px 20px;
+    margin: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    border-radius: 6px;
+    border: 1px solid #000000;
+    transition-duration: 0.1s;
+}
+.button:hover {
+  background-color: #c9c9c9; /* Green */
 }
 </style>
