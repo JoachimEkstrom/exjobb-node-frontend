@@ -4,7 +4,7 @@
             <Button text="Browse Root folder on OPC Server" eventId="browseOPC" @click="browseOPCServer(hostname, OPCNodeId)"></Button>
             <Button v-if="topLevel === false" text="Go up one level" eventId="goBack" @click="goBack(hostname, lastOPCNodeId)"></Button>
         </div>
-        <div>Current location: {{ currentFolder[currentFolder.length -1] }}</div>
+        <div class="currentFolder">Current folder: {{ currentFolder[currentFolder.length -1] }}</div>
 
         <div id="browser">
             <div v-for="(data, index) in browsedData" :key="index" class="oneElement">
@@ -164,6 +164,9 @@ p {
 .navigation {
     margin: 0px;
     background-color: var(--var-bg-colordark);
+}
+.currentFolder{
+    padding-top: 15px;
 }
 #browser {
     margin: auto;
