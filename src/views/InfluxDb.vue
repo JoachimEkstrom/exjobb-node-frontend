@@ -2,7 +2,7 @@
     <div id="container">
         <AddToInfluxDB v-bind:hostname= host />
 
-        <iframe id="iframe" src='http://localhost:3000/d-solo/_Ehr2dfMz/nodejs?orgId=1&refresh=5s&from=1620282173011&to=1620303773012&panelId=2'></iframe>
+        <iframe id="iframe" src='http://localhost:3000/d-solo/QCmeK93Mk/examensarbete?orgId=1&refresh=5s&panelId=2'></iframe>
     </div>
 </template>
 
