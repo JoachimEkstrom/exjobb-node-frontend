@@ -31,6 +31,9 @@ const store = createStore({
         popLastOPCNodeId(state, data) {
             state.lastOPCNodeId.pop()
         },
+        resetLastOPCNodeId(state, data) {
+            state.lastOPCNodeId = []
+        },
         setTopLevel(state, data) {
             state.topLevel = true
         },
@@ -42,6 +45,9 @@ const store = createStore({
         },
         popCurrentFolder(state, data) {
             state.currentFolder.pop()
+        },
+        resetCurrentFolder(state, data) {
+            state.currentFolder = []
         },
     },
     actions: {

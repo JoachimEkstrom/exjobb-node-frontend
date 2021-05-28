@@ -29,7 +29,7 @@
                         <p>{{args.name}} : <input v-model="methodArgs[index]" type="number"></p>                        
                     </div>
                     <Button class="methodButton" text="Call Method" eventId="callMethod" @click="callMethod(hostname, data, methodArgs)"></Button>
-                    <p> {{data.result}} </p>
+                    <p> Result from OPC method: {{data.result}} </p>
                 </div>
                 <p class="viewNextLevel" v-else @click="browseOPCServer(hostname, data.id, data.name)">  View: {{data.name}} </p>
             </div>    
@@ -68,9 +68,9 @@ export default {
      methods: {
 
         ...mapActions(['updBrowsedData', 'updMethodArguments']),
-        ...mapMutations({   pushNodeId: 'pushLastOPCNodeId', popNodeId:'popLastOPCNodeId', 
+        ...mapMutations({   pushNodeId: 'pushLastOPCNodeId', popNodeId:'popLastOPCNodeId', resetLastOPCNodeId : 'resetLastOPCNodeId', 
                             setTopLevel : 'setTopLevel', resetTopLevel : 'resetTopLevel',
-                            pushCurrentFolder: 'pushCurrentFolder', popCurrentFolder: 'popCurrentFolder' }),
+                            pushCurrentFolder: 'pushCurrentFolder', popCurrentFolder: 'popCurrentFolder', resetCurrentFolder: 'resetCurrentFolder' }),
 
         callMethod(hostname, nodeData, arg){
             fetch(`${hostname}/callMethod`, {
@@ -116,10 +116,11 @@ export default {
         },
         writeVar(hostname, nodeData, newValue){
             console.log(newValue)
+            console.log(nodeData)
             fetch(`${hostname}/writeVariable`, {
                 method: 'POST',
                 headers: {"Access-Control-Allow-Origin" : '*', 'Content-Type': 'application/json'},
-                body: JSON.stringify({nodeId:nodeData.id, newValue: newValue}),
+                body: JSON.stringify({nodeId:nodeData.id, newValue: newValue, dataType: nodeData.dataType}),
             })
             .then(response => response.json())
             .then(data => {
@@ -132,9 +133,18 @@ export default {
             
         },
         browseOPCServer(hostname, uri, name){
+            console.log(uri)
+            console.log(this.currentFolder)
             this.pushNodeId(uri)
             this.resetTopLevel()
-            if (!name){ name = "RootFolder"}
+            if (!name){ 
+                name = "RootFolder"
+            }
+            if (uri==="RootFolder"){ 
+                this.resetCurrentFolder()
+                this.resetLastOPCNodeId()
+            }
+
             this.pushCurrentFolder(name)
             this.updBrowsedData({hostname: hostname, uri: uri})   
         },
