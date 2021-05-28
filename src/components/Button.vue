@@ -29,7 +29,6 @@ export default {
 <style scoped>
 .button {
     cursor: pointer;
-    /* background-color: #4CAF50; Green */
     border: none;
     color: rgb(0, 0, 0);
     padding: 10px 20px;
@@ -43,6 +42,6 @@ export default {
     transition-duration: 0.1s;
 }
 .button:hover {
-  background-color: #c9c9c9; /* Green */
+  background-color: var(--var-bg-buttondark);
 }
 </style>

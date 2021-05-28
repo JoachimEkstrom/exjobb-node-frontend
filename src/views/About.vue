@@ -23,7 +23,7 @@
   display:block;
 }
 h1 {
-  margin-top: 50px;
+  margin-top: 25px;
   font-size: 30px;
   font-weight: 700;
   margin-bottom: 0px;
@@ -41,7 +41,7 @@ p {
 }
 img {
   padding-top: 30px;
-  width : 60%;
+  width : 750px;
 
 }
 </style>

@@ -4,6 +4,7 @@
             <Button text="Browse Root folder on OPC Server" eventId="browseOPC" @click="browseOPCServer(hostname, OPCNodeId)"></Button>
             <Button v-if="topLevel === false" text="Go up one level" eventId="goBack" @click="goBack(hostname, lastOPCNodeId)"></Button>
         </div>
+        <div>Current location: {{ currentFolder[currentFolder.length -1] }}</div>
 
         <div id="browser">
             <div v-for="(data, index) in browsedData" :key="index" class="oneElement">
@@ -30,7 +31,7 @@
                     <Button class="methodButton" text="Call Method" eventId="callMethod" @click="callMethod(hostname, data, methodArgs)"></Button>
                     <p> {{data.result}} </p>
                 </div>
-                <p class="viewNextLevel" v-else @click="browseOPCServer(hostname, data.id)">  View: {{data.name}} </p>
+                <p class="viewNextLevel" v-else @click="browseOPCServer(hostname, data.id, data.name)">  View: {{data.name}} </p>
             </div>    
         </div>
     </div>
@@ -45,7 +46,7 @@ export default {
         Button,
     },
     computed: {
-        ...mapState(['browsedData', 'methodArguments','lastOPCNodeId', 'topLevel']),
+        ...mapState(['browsedData', 'methodArguments','lastOPCNodeId', 'topLevel', 'currentFolder']),
         
     },
     props: {
@@ -67,7 +68,9 @@ export default {
      methods: {
 
         ...mapActions(['updBrowsedData', 'updMethodArguments']),
-        ...mapMutations({pushNodeId: 'pushLastOPCNodeId', popNodeId:'popLastOPCNodeId', setTopLevel : 'setTopLevel', resetTopLevel : 'resetTopLevel'}),
+        ...mapMutations({   pushNodeId: 'pushLastOPCNodeId', popNodeId:'popLastOPCNodeId', 
+                            setTopLevel : 'setTopLevel', resetTopLevel : 'resetTopLevel',
+                            pushCurrentFolder: 'pushCurrentFolder', popCurrentFolder: 'popCurrentFolder' }),
 
         callMethod(hostname, nodeData, arg){
             fetch(`${hostname}/callMethod`, {
@@ -128,12 +131,15 @@ export default {
                 });
             
         },
-        browseOPCServer(hostname, uri){
+        browseOPCServer(hostname, uri, name){
             this.pushNodeId(uri)
             this.resetTopLevel()
+            if (!name){ name = "RootFolder"}
+            this.pushCurrentFolder(name)
             this.updBrowsedData({hostname: hostname, uri: uri})   
         },
         goBack(hostname){
+            this.popCurrentFolder()
             this.popNodeId()
             let uri = this.lastOPCNodeId[this.lastOPCNodeId.length -1]
             if (this.lastOPCNodeId.length === 0) {
@@ -157,7 +163,7 @@ p {
 }
 .navigation {
     margin: 0px;
-    background-color: rgb(202, 202, 202);
+    background-color: var(--var-bg-colordark);
 }
 #browser {
     margin: auto;
@@ -167,7 +173,7 @@ p {
 
 }
 .oneElement {
-    background-color:rgb(90, 166, 253);
+    background-color:var(--var-primary);
     margin:  20px;
     border-radius: 25px;
 
@@ -195,9 +201,7 @@ p {
     justify-content: center;
     padding: 5px 10px;
 }
-.writeDiv{
 
-}
 .writeP {
     margin: 5px auto;
     padding: 0px;

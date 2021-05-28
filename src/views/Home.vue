@@ -21,7 +21,7 @@ export default {
 <style scoped>
 img {
   padding-top: 50px;
-  width : 60%;
+  width : 750px;
 
 }
 h1 {

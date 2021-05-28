@@ -9,6 +9,7 @@ const store = createStore({
             isContinuousQuering: false,
             lastOPCNodeId: [],
             topLevel: true,
+            currentFolder: ["Not browsing server"],
         }
     },
     mutations: {
@@ -36,13 +37,19 @@ const store = createStore({
         resetTopLevel(state, data) {
             state.topLevel = false
         },
+        pushCurrentFolder(state, data) {
+            state.currentFolder.push(data)
+        },
+        popCurrentFolder(state, data) {
+            state.currentFolder.pop()
+        },
     },
     actions: {
         async updBrowsedData(context, { hostname: hostname, uri: uri }) {
             fetch(`${hostname}/browseOPCServer`, {
                 method: "POST",
                 headers: { "Access-Control-Allow-Origin": "*", "Content-Type": "application/json" },
-                body: JSON.stringify({ uri: uri }), //"ns=7;s=MAIN"
+                body: JSON.stringify({ uri: uri }),
             })
                 .then((response) => response.json())
                 .then((data) => {

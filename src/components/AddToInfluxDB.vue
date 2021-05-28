@@ -1,13 +1,14 @@
 <template>
     <div>
-        <Button text="Read InfluxDB String" eventId="readOPC" @clicked="readDataForInfluxDb(hostname)"></Button>
-        <Button text="Start continuous query" eventId="startQuery" @click="startContinuousQuery(hostname, time)"/>
-        <Button text="Stop continuous query" eventId="stopQuery" @click="stopContinuousQuery()" />
-
+        <div class="buttons">
+            <Button text="Read InfluxDB String" eventId="readOPC" @clicked="readDataForInfluxDb(hostname)"></Button>
+            <Button text="Start continuous query" eventId="startQuery" @click="startContinuousQuery(hostname, time)"/>
+            <Button text="Stop continuous query" eventId="stopQuery" @click="stopContinuousQuery()" />
+        </div>
         <div v-if="InfluxDBResponse === 1">
             <h2>Response from InfluxDb</h2>
-            <p></p>
-            <p></p>
+            <p> </p>
+            <p> </p>
         </div>
         <div v-else-if="InfluxDBResponse.status === 204">
             <h2>Response from InfluxDb</h2>
@@ -17,7 +18,7 @@
         <div v-else>
             <h2>Response from InfluxDb</h2>
             <p>{{InfluxDBResponse}}</p>
-            <p></p>
+            <p> </p>
         </div>   
     </div>
 </template>
@@ -66,5 +67,9 @@ export default {
 </script>
 
 <style scoped>
-
+.buttons{
+    display: flex;
+    margin: auto;
+    justify-content: center;
+}
 </style>
