@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="buttons">
-            <Button text="Read InfluxDB String" eventId="readOPC" @clicked="readDataForInfluxDb(hostname)"></Button>
+            <Button text="Send single query" eventId="readOPC" @clicked="readDataForInfluxDb(hostname)"></Button>
             <Button text="Start continuous query" eventId="startQuery" @click="startContinuousQuery(hostname, time)"/>
             <Button text="Stop continuous query" eventId="stopQuery" @click="stopContinuousQuery()" />
         </div>
@@ -39,7 +39,6 @@ export default {
     },
     data() { 
         return {
-            isContinuousQuery : false,
             interval : "",
             time : 1000,
         } 
